@@ -1,6 +1,8 @@
+// Form.js
+
 import React, { useState } from "react";
 import OrderDisplay from "./OrderDisplay";
-import './Form.css'
+// import "./Form.css";
 
 const Form = () => {
   const [input, setInput] = useState({
@@ -14,15 +16,21 @@ const Form = () => {
 
   const submitHandler = (e) => {
     e.preventDefault();
+    const newOrder = {
+      ...input,
+      orderId: input.orderId || Date.now(), // Use current time if orderId is not provided
+    };
+
     localStorage.setItem(
-      input.orderId,
+      newOrder.orderId.toString(),
       JSON.stringify({
-        description: input.description,
-        price: input.price,
-        table: input.table,
+        description: newOrder.description,
+        price: newOrder.price,
+        table: newOrder.table,
       })
     );
-    setOrders([...orders, input]);
+
+    setOrders([...orders, newOrder]);
     setInput({
       orderId: "",
       description: "",
@@ -40,33 +48,25 @@ const Form = () => {
             type="text"
             placeholder="Order ID"
             value={input.orderId}
-            onChange={(e) => {
-              setInput({ ...input, orderId: e.target.value });
-            }}
+            onChange={(e) => setInput({ ...input, orderId: e.target.value })}
           />
           <input
             type="text"
             placeholder="Order Details"
             value={input.description}
-            onChange={(e) => {
-              setInput({ ...input, description: e.target.value });
-            }}
+            onChange={(e) => setInput({ ...input, description: e.target.value })}
           />
           <input
             type="text"
             placeholder="Price"
             value={input.price}
-            onChange={(e) => {
-              setInput({ ...input, price: e.target.value });
-            }}
+            onChange={(e) => setInput({ ...input, price: e.target.value })}
           />
           <select
             name=""
             id=""
             value={input.table}
-            onChange={(e) => {
-              setInput({ ...input, table: e.target.value });
-            }}
+            onChange={(e) => setInput({ ...input, table: e.target.value })}
           >
             <option value="Table 1">Table 1</option>
             <option value="Table 2">Table 2</option>
@@ -75,13 +75,12 @@ const Form = () => {
             <option value="Table 5">Table 5</option>
           </select>
           <button type="submit" onClick={submitHandler}>
-            {" "}
-            Order{" "}
+            Order
           </button>
         </form>
       </div>
 
-      <OrderDisplay orders={orders}/>
+      <OrderDisplay orders={orders} setOrders={setOrders} />
     </>
   );
 };
